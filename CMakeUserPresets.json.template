@@ -13,6 +13,10 @@
       "description": "Override base paths here for your machine — this file is gitignored",
       "cacheVariables": {
         "CMAKE_PREFIX_PATH": "/custom/path/here"
+      },
+      "environment": {
+        "http_proxy": "http://127.0.0.1:7890",
+        "https_proxy": "http://127.0.0.1:7890"
       }
     }
   ],
