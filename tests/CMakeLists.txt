@@ -1,13 +1,14 @@
 file(GLOB_RECURSE INTEGRATION_TEST_SOURCES CONFIGURE_DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp)
 
-foreach(TEST_SRC ${INTEGRATION_TEST_SOURCES})
+foreach (TEST_SRC ${INTEGRATION_TEST_SOURCES})
+    # 文件名 不带后缀
     get_filename_component(TEST_NAME ${TEST_SRC} NAME_WE)
     add_executable(${TEST_NAME} ${TEST_SRC})
     target_link_libraries(${TEST_NAME} PRIVATE
-        config-center-core
-        config-center-sdk
-        GTest::GTest
-        GTest::Main
+            ${HEADER_ONLY_NAME} # 项目的头文件
+            ${PROJECT_NAME}-sdk # sdk的头文件
+            GTest::GTest
+            GTest::Main
     )
     add_test(NAME ${TEST_NAME} COMMAND ${TEST_NAME})
-endforeach()
+endforeach ()
