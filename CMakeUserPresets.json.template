@@ -1,0 +1,35 @@
+{
+  "version": 6,
+  "cmakeMinimumRequired": {
+    "major": 3,
+    "minor": 20,
+    "patch": 0
+  },
+  "configurePresets": [
+    {
+      "name": "user-debug",
+      "inherits": "debug",
+      "displayName": "User Debug",
+      "description": "Override base paths here for your machine — this file is gitignored",
+      "cacheVariables": {
+        "CMAKE_PREFIX_PATH": "/custom/path/here"
+      }
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "user-debug",
+      "configurePreset": "user-debug",
+      "jobs": 0
+    }
+  ],
+  "testPresets": [
+    {
+      "name": "user-debug",
+      "configurePreset": "user-debug",
+      "output": {
+        "outputOnFailure": true
+      }
+    }
+  ]
+}

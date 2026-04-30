@@ -1,0 +1,182 @@
+{
+  "version": 6,
+  "cmakeMinimumRequired": {
+    "major": 3,
+    "minor": 20,
+    "patch": 0
+  },
+  "configurePresets": [
+    {
+      "name": "base",
+      "hidden": true,
+      "binaryDir": "${sourceDir}/build/${presetName}",
+      "cacheVariables": {
+        "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
+      }
+    },
+
+    {
+      "name": "macos-base",
+      "hidden": true,
+      "inherits": "base",
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Darwin"
+      },
+      "cacheVariables": {
+        "CMAKE_PREFIX_PATH": "/opt/homebrew/opt/boost:/opt/homebrew/opt/openssl@3:/opt/homebrew/opt/protobuf:/opt/homebrew/opt/grpc"
+      }
+    },
+
+    {
+      "name": "linux-base",
+      "hidden": true,
+      "inherits": "base",
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Linux"
+      }
+    },
+
+    {
+      "name": "debug",
+      "inherits": ["macos-base", "linux-base"],
+      "displayName": "Debug (macOS/Linux)",
+      "description": "Debug build with tests and sanitizers",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "BUILD_TESTS": "ON",
+        "ENABLE_ASAN": "ON",
+        "ENABLE_UBSAN": "ON"
+      }
+    },
+
+    {
+      "name": "debug-no-san",
+      "inherits": ["macos-base", "linux-base"],
+      "displayName": "Debug (no sanitizers)",
+      "description": "Debug build with tests, no sanitizers (faster)",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "BUILD_TESTS": "ON",
+        "ENABLE_ASAN": "OFF",
+        "ENABLE_UBSAN": "OFF"
+      }
+    },
+
+    {
+      "name": "release",
+      "inherits": ["macos-base", "linux-base"],
+      "displayName": "Release (macOS/Linux)",
+      "description": "Release build, no tests",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release",
+        "BUILD_TESTS": "OFF",
+        "ENABLE_ASAN": "OFF",
+        "ENABLE_UBSAN": "OFF"
+      }
+    },
+
+    {
+      "name": "release-with-tests",
+      "inherits": ["macos-base", "linux-base"],
+      "displayName": "Release + Tests (macOS/Linux)",
+      "description": "Release build with tests enabled",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "RelWithDebInfo",
+        "BUILD_TESTS": "ON",
+        "ENABLE_ASAN": "OFF",
+        "ENABLE_UBSAN": "OFF"
+      }
+    },
+
+    {
+      "name": "macos-debug",
+      "inherits": "macos-base",
+      "displayName": "macOS Debug",
+      "description": "Debug build on macOS with tests and sanitizers",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "BUILD_TESTS": "ON",
+        "ENABLE_ASAN": "ON",
+        "ENABLE_UBSAN": "ON"
+      }
+    },
+
+    {
+      "name": "macos-release",
+      "inherits": "macos-base",
+      "displayName": "macOS Release",
+      "description": "Release build on macOS",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release",
+        "BUILD_TESTS": "OFF",
+        "ENABLE_ASAN": "OFF",
+        "ENABLE_UBSAN": "OFF"
+      }
+    },
+
+    {
+      "name": "linux-debug",
+      "inherits": "linux-base",
+      "displayName": "Linux Debug",
+      "description": "Debug build on Linux with tests and sanitizers",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "BUILD_TESTS": "ON",
+        "ENABLE_ASAN": "ON",
+        "ENABLE_UBSAN": "ON"
+      }
+    },
+
+    {
+      "name": "linux-release",
+      "inherits": "linux-base",
+      "displayName": "Linux Release",
+      "description": "Release build on Linux",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release",
+        "BUILD_TESTS": "OFF",
+        "ENABLE_ASAN": "OFF",
+        "ENABLE_UBSAN": "OFF"
+      }
+    }
+  ],
+
+  "buildPresets": [
+    {
+      "name": "debug",
+      "configurePreset": "debug",
+      "jobs": 0
+    },
+    {
+      "name": "release",
+      "configurePreset": "release",
+      "jobs": 0
+    },
+    {
+      "name": "release-with-tests",
+      "configurePreset": "release-with-tests",
+      "jobs": 0
+    }
+  ],
+
+  "testPresets": [
+    {
+      "name": "default",
+      "configurePreset": "debug",
+      "output": {
+        "outputOnFailure": true
+      }
+    },
+    {
+      "name": "release",
+      "configurePreset": "release-with-tests",
+      "output": {
+        "outputOnFailure": true
+      }
+    }
+  ]
+}

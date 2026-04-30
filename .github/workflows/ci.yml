@@ -1,0 +1,88 @@
+name: CI
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        build_type: [Debug, Release]
+        sanitizer: [none, asan, ubsan]
+        exclude:
+          - build_type: Release
+            sanitizer: asan
+          - build_type: Release
+            sanitizer: ubsan
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install system packages
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            cmake ninja-build \
+            libboost-system-dev \
+            libssl-dev \
+            protobuf-compiler libprotobuf-dev \
+            libgrpc++-dev protobuf-compiler-grpc
+
+      - name: Configure (Debug, no sanitizer)
+        if: matrix.sanitizer == 'none' && matrix.build_type == 'Debug'
+        run: >
+          cmake -B build -G Ninja
+          -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
+          -DBUILD_TESTS=ON
+
+      - name: Configure (Release, no sanitizer)
+        if: matrix.sanitizer == 'none' && matrix.build_type == 'Release'
+        run: >
+          cmake -B build -G Ninja
+          -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
+          -DBUILD_TESTS=OFF
+
+      - name: Configure (Debug, ASAN)
+        if: matrix.sanitizer == 'asan'
+        run: >
+          cmake -B build -G Ninja
+          -DCMAKE_BUILD_TYPE=Debug
+          -DENABLE_ASAN=ON
+          -DBUILD_TESTS=ON
+
+      - name: Configure (Debug, UBSAN)
+        if: matrix.sanitizer == 'ubsan'
+        run: >
+          cmake -B build -G Ninja
+          -DCMAKE_BUILD_TYPE=Debug
+          -DENABLE_UBSAN=ON
+          -DBUILD_TESTS=ON
+
+      - name: Build
+        run: cmake --build build --parallel
+
+      - name: Run tests
+        if: matrix.build_type == 'Debug'
+        run: cd build && ctest --output-on-failure
+
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install clang-format and clang-tidy
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y clang-format clang-tidy
+
+      - name: Run clang-format check
+        run: |
+          find src include sdk tests -name '*.cpp' -o -name '*.h' | xargs clang-format --dry-run --Werror || true
+
+      - name: Run clang-tidy check
+        run: |
+          find src include sdk tests -name '*.cpp' -o -name '*.h' | xargs clang-tidy --warnings-as-errors='*' || true

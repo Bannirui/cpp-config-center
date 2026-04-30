@@ -1,0 +1,61 @@
+# Config Center Server Configuration
+
+server:
+  http:
+    host: "0.0.0.0"
+    port: 8080
+    threads: 0
+  grpc:
+    host: "0.0.0.0"
+    port: 9090
+    threads: 0
+
+storage:
+  backend: "sqlite"
+  sqlite:
+    path: "data/config-center.db"
+  mysql:
+    host: "127.0.0.1"
+    port: 3306
+    user: "root"
+    password: ""
+    database: "config_center"
+    pool_size: 10
+    timeout_seconds: 30
+
+auth:
+  enabled: true
+  jwt:
+    secret: "change-me-in-production"
+    expiry_hours: 24
+  read_auth_required: false
+
+namespace:
+  default_environments:
+    - DEV
+    - FAT
+    - UAT
+    - PROD
+
+publish:
+  approval:
+    default_enabled: false
+  grayscale:
+    default_percentage: 100
+
+notification:
+  long_polling:
+    max_timeout_seconds: 120
+    default_timeout_seconds: 60
+  grpc:
+    keepalive_seconds: 30
+
+limits:
+  config_key_max_length: 128
+  config_value_max_bytes: 1048576
+  release_note_max_length: 4096
+
+logging:
+  level: "info"
+  file: ""
+  format: "text"

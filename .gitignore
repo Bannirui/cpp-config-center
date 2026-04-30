@@ -1,0 +1,19 @@
+# Build
+build/
+cmake-build-*/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# User presets (machine-specific paths)
+CMakeUserPresets.json
+
+# Server data
+data/
+
+# Cache
+*.pyc
+__pycache__/

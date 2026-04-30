@@ -1,0 +1,96 @@
+syntax = "proto3";
+
+package config_center;
+
+service ConfigService {
+    rpc GetConfig(GetConfigRequest) returns (GetConfigResponse);
+    rpc SetConfig(SetConfigRequest) returns (SetConfigResponse);
+    rpc DeleteConfig(DeleteConfigRequest) returns (DeleteConfigResponse);
+    rpc WatchConfig(WatchConfigRequest) returns (stream ConfigChangeNotification);
+    rpc PublishRelease(PublishReleaseRequest) returns (PublishReleaseResponse);
+    rpc GetReleaseHistory(GetReleaseHistoryRequest) returns (GetReleaseHistoryResponse);
+}
+
+message Config {
+    string namespace_id = 1;
+    string key = 2;
+    string value = 3;
+    int32 version = 4;
+    string status = 5;
+}
+
+message GetConfigRequest {
+    string namespace_id = 1;
+    string key = 2;
+}
+
+message GetConfigResponse {
+    Config config = 1;
+}
+
+message SetConfigRequest {
+    string namespace_id = 1;
+    string key = 2;
+    string value = 3;
+    string operator_id = 4;
+}
+
+message SetConfigResponse {
+    Config config = 1;
+}
+
+message DeleteConfigRequest {
+    string namespace_id = 1;
+    string key = 2;
+    string operator_id = 3;
+}
+
+message DeleteConfigResponse {
+    bool success = 1;
+}
+
+message ConfigChangeNotification {
+    string namespace_id = 1;
+    int64 release_id = 2;
+    repeated string changed_keys = 3;
+    int64 timestamp = 4;
+}
+
+message WatchConfigRequest {
+    repeated string namespace_ids = 1;
+    int64 last_release_id = 2;
+    string instance_id = 3;
+    string ip_address = 4;
+}
+
+message PublishReleaseRequest {
+    string namespace_id = 1;
+    string release_note = 2;
+    string operator_id = 3;
+}
+
+message Release {
+    int64 id = 1;
+    string namespace_id = 2;
+    int32 release_version = 3;
+    string release_note = 4;
+    string release_type = 5;
+    string status = 6;
+    string operator_id = 7;
+    string created_at = 8;
+}
+
+message PublishReleaseResponse {
+    Release release = 1;
+}
+
+message GetReleaseHistoryRequest {
+    string namespace_id = 1;
+    int32 page = 2;
+    int32 page_size = 3;
+}
+
+message GetReleaseHistoryResponse {
+    repeated Release releases = 1;
+    int32 total = 2;
+}
