@@ -6,5 +6,4 @@ target_include_directories(${PROJECT_NAME}-sdk PUBLIC
 )
 target_link_libraries(${PROJECT_NAME}-sdk PUBLIC
         ${HEADER_ONLY_NAME} # 还要依赖项目的头文件
-        Boost::beast
 )

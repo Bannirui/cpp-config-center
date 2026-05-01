@@ -1,6 +1,9 @@
 cmake_minimum_required(VERSION 3.20)
 project(config-center VERSION 1.0.0 LANGUAGES CXX)
 
+# 关掉cmake的warning
+set(CMAKE_SUPPRESS_DEVELOPER_WARNINGS 1)
+
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
@@ -46,22 +49,16 @@ add_subdirectory(proto)
 
 # 在顶层把头文件编成单独的库给实现去依赖
 set(HEADER_ONLY_NAME ${PROJECT_NAME}-core)
-add_library(${HEADER_ONLY_NAME} STATIC)
+add_library(${HEADER_ONLY_NAME} INTERFACE)
 # 整个项目自己的头文件路径
-target_include_directories(${HEADER_ONLY_NAME} PUBLIC
+target_include_directories(${HEADER_ONLY_NAME} INTERFACE
         ${CMAKE_CURRENT_SOURCE_DIR}/include
 )
-target_link_libraries(${HEADER_ONLY_NAME} PUBLIC
-        Boost::system
-        nlohmann_json::nlohmann_json
-        yaml-cpp::yaml-cpp
-        sqlite_orm::sqlite_orm
-        OpenSSL::SSL
-        OpenSSL::Crypto
-        config-center-proto
-)
+
+# boost的头文件 在源码中直接#include <boost/beast.hpp>
 # jwt-cpp is header-only — its include dir is in the source tree
-target_include_directories(${HEADER_ONLY_NAME} PUBLIC
+target_include_directories(${HEADER_ONLY_NAME} INTERFACE
+        ${Boost_INCLUDE_DIRS}
         ${jwt-cpp_SOURCE_DIR}/include
 )
 

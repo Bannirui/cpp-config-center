@@ -7,8 +7,8 @@ foreach (TEST_SRC ${INTEGRATION_TEST_SOURCES})
     target_link_libraries(${TEST_NAME} PRIVATE
             ${HEADER_ONLY_NAME} # 项目的头文件
             ${PROJECT_NAME}-sdk # sdk的头文件
-            GTest::GTest
-            GTest::Main
+            gtest
+            gtest_main
     )
     add_test(NAME ${TEST_NAME} COMMAND ${TEST_NAME})
 endforeach ()

@@ -18,7 +18,12 @@ A C++ native remote configuration center inspired by Apollo and Nacos.
 
 - C++17 compiler (GCC 12+, Clang 15+)
 - CMake 3.20+
-- **System packages:** Boost (system), OpenSSL, Protobuf, gRPC
+- **System packages:**
+  - Boost (system)
+  - OpenSSL
+  - Protobuf
+  - gRPC
+  - sqlite
 
 **macOS:**
 ```bash
@@ -27,7 +32,14 @@ brew install cmake boost openssl protobuf grpc
 
 **Ubuntu/Debian:**
 ```bash
-sudo apt install cmake libboost-system-dev libssl-dev protobuf-compiler libprotobuf-dev libgrpc++-dev
+sudo apt install \
+cmake \
+libboost-system-dev \
+libssl-dev \
+protobuf-compiler \
+libprotobuf-dev \
+libgrpc++-dev \
+libsqlite3-dev
 ```
 
 ### Build
