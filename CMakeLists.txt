@@ -55,11 +55,20 @@ target_include_directories(${HEADER_ONLY_NAME} INTERFACE
         ${CMAKE_CURRENT_SOURCE_DIR}/include
 )
 
-# boost的头文件 在源码中直接#include <boost/beast.hpp>
-# jwt-cpp is header-only — its include dir is in the source tree
-target_include_directories(${HEADER_ONLY_NAME} INTERFACE
-        ${Boost_INCLUDE_DIRS}
+# jwt-cpp is header-only 第三方头文件库
+add_library(x-jwt-cpp INTERFACE)
+target_include_directories(x-jwt-cpp INTERFACE
         ${jwt-cpp_SOURCE_DIR}/include
+)
+
+target_link_libraries(${HEADER_ONLY_NAME}
+        INTERFACE
+        Boost::boost
+        OpenSSL::SSL
+        OpenSSL::Crypto
+        yaml-cpp
+        nlohmann_json::nlohmann_json
+        x-jwt-cpp
 )
 
 add_subdirectory(src)
